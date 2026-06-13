@@ -1,0 +1,25 @@
+jfcorrea (AUXILIAR 1)
+ee08aa602a0b3be8
+
+caleiva (AUXILIAR 1)
+b36b3387072d5a8c
+
+mjflores
+1679df3b11d50c97
+
+
+$2b$10$ALGFNsEMTaZ2bFpI3w8r7ewILMoPtHd.Q1DaJ7sMlEiirk.ABFl8G
+
+
+delete from articulo;
+delete from certificadoidioma;
+delete from capacitacion;
+delete from investigacion;
+delete from ponencia;
+delete from tesisdirigida;
+delete from adicional;
+DELETE FROM evaldocente;
+delete from postulacion;
+delete from rol_usuario where rol_id = 9;
+delete from comision;
+delete from convocatoria;

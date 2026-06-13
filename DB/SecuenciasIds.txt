@@ -1,0 +1,118 @@
+-- Crear la secuencia
+CREATE SEQUENCE capacitacion_capacitacion_id_seq START 1;
+
+-- Asignar la secuencia a la columna articulo_id
+ALTER TABLE capacitacion ALTER COLUMN capacitacion_id SET DEFAULT nextval('capacitacion_capacitacion_id_seq');
+
+-- Corregir la secuencia para que continúe desde el último ID existente
+SELECT setval('capacitacion_capacitacion_id_seq', 
+    COALESCE((SELECT MAX(capacitacion_id)::BIGINT FROM capacitacion), 1), 
+    false);
+
+ALTER TABLE capacitacion ALTER COLUMN capacitacion_id TYPE BIGINT;
+ALTER TABLE capacitacion ALTER COLUMN capacitacion_id SET DEFAULT nextval('capacitacion_capacitacion_id_seq');
+
+ALTER TABLE ponencia ALTER COLUMN ponencia_afinidad TYPE VARCHAR(32);
+ALTER TABLE capacitacion ALTER COLUMN capacitacion_nombreevento TYPE VARCHAR(128);
+ALTER TABLE capacitacion ALTER COLUMN capacitacion_UBICACION TYPE VARCHAR(256);
+
+
+
+
+
+
+ALTER TABLE tesista
+ALTER COLUMN tesis_id TYPE BIGINT USING tesis_id::BIGINT;
+
+-- Crear la secuencia
+CREATE SEQUENCE tesis_tesis_id_seq START 1;
+
+-- Asignar la secuencia a la columna articulo_id
+ALTER TABLE tesisdirigida ALTER COLUMN tesis_id SET DEFAULT nextval('tesis_tesis_id_seq');
+
+-- Corregir la secuencia para que continúe desde el último ID existente
+SELECT setval('tesis_tesis_id_seq', 
+    COALESCE((SELECT MAX(tesis_id)::BIGINT FROM tesisdirigida), 1), 
+    false);
+
+ALTER TABLE tesisdirigida ALTER COLUMN tesis_id TYPE BIGINT;
+ALTER TABLE tesisdirigida ALTER COLUMN tesis_id SET DEFAULT nextval('tesis_tesis_id_seq');
+
+
+
+
+
+-- Crear la secuencia
+CREATE SEQUENCE investigacion_investigacion_id_seq START 1;
+
+-- Asignar la secuencia a la columna articulo_id
+ALTER TABLE investigacion ALTER COLUMN investigacion_id SET DEFAULT nextval('investigacion_investigacion_id_seq');
+
+-- Corregir la secuencia para que continúe desde el último ID existente
+SELECT setval('investigacion_investigacion_id_seq', 
+    COALESCE((SELECT MAX(investigacion_id)::BIGINT FROM investigacion), 1), 
+    false);
+
+ALTER TABLE investigacion ALTER COLUMN investigacion_id TYPE BIGINT;
+ALTER TABLE investigacion ALTER COLUMN investigacion_id SET DEFAULT nextval('investigacion_investigacion_id_seq');
+
+
+
+
+
+ALTER TABLE gestioneducativa
+ALTER COLUMN ge_id TYPE BIGINT USING ge_id::BIGINT;
+
+-- Crear la secuencia
+CREATE SEQUENCE ge_ge_id_seq START 1;
+
+-- Asignar la secuencia a la columna articulo_id
+ALTER TABLE gestioneducativa ALTER COLUMN ge_id SET DEFAULT nextval('ge_ge_id_seq');
+
+-- Corregir la secuencia para que continúe desde el último ID existente
+SELECT setval('ge_ge_id_seq', 
+    COALESCE((SELECT MAX(ge_id)::BIGINT FROM gestioneducativa), 1), 
+    false);
+
+ALTER TABLE gestioneducativa ALTER COLUMN ge_id TYPE BIGINT;
+ALTER TABLE gestioneducativa ALTER COLUMN ge_id SET DEFAULT nextval('ge_ge_id_seq');
+
+
+
+
+
+
+-- Crear la secuencia
+CREATE SEQUENCE ponencia_ponencia_id_seq START 1;
+
+-- Asignar la secuencia a la columna articulo_id
+ALTER TABLE ponencia ALTER COLUMN ponencia_id SET DEFAULT nextval('ponencia_ponencia_id_seq');
+
+-- Corregir la secuencia para que continúe desde el último ID existente
+SELECT setval('ponencia_ponencia_id_seq', 
+    COALESCE((SELECT MAX(ponencia_id)::BIGINT FROM ponencia), 1), 
+    false);
+
+ALTER TABLE ponencia ALTER COLUMN ponencia_id TYPE BIGINT;
+ALTER TABLE ponencia ALTER COLUMN ponencia_id SET DEFAULT nextval('ponencia_ponencia_id_seq');
+
+
+
+
+
+
+-- Crear la secuencia
+CREATE SEQUENCE evaldocente_evaldocente_id_seq START 1;
+
+-- Asignar la secuencia a la columna articulo_id
+ALTER TABLE evaldocente ALTER COLUMN ced_id SET DEFAULT nextval('evaldocente_evaldocente_id_seq');
+
+-- Corregir la secuencia para que continúe desde el último ID existente
+SELECT setval('evaldocente_evaldocente_id_seq', 
+    COALESCE((SELECT MAX(ced_id)::BIGINT FROM evaldocente), 1), 
+    false);
+
+ALTER TABLE evaldocente ALTER COLUMN ced_id TYPE BIGINT;
+ALTER TABLE evaldocente ALTER COLUMN ced_id SET DEFAULT nextval('evaldocente_evaldocente_id_seq');
+
+ALTER TABLE evaldocente ALTER COLUMN ced_ubicacion TYPE VARCHAR(256);

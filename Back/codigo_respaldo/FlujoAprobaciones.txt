@@ -1,0 +1,82 @@
+//Flujo de aprobaciones
+if (userRole === 'GERENTE GENERAL') {
+            const newApprovalId = parseInt(await getNextApprovalId(),10);
+
+            const resultApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [newApprovalId, user_id, newQuotationId, 'Aprobado']);
+
+            if (resultApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación de Gerente General.');
+            };
+        } else if (userRole === 'COME') {
+            const newApprovalId = parseInt(await getNextApprovalId(),10);
+
+            const resultComeApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [newApprovalId, user_id, newQuotationId, 'Aprobado']);
+
+            const resultFinancieroApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [newApprovalId + 1, financieroId.rows[0].user_id, newQuotationId, 'Pendiente']);
+
+            if (resultComeApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación de financiero.');
+            };
+
+            if (resultFinancieroApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación pendiente de financiero.');
+            };
+
+        } else if (userRole === 'GERENTE') {
+            const newApprovalId = await getNextApprovalId();
+
+            const resultGerenteApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [parseInt(newApprovalId, 10), user_id, newQuotationId, 'Aprobado']);
+
+            const resultFinancieroApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [parseInt(newApprovalId, 10) + 1, financieroId.rows[0].user_id, newQuotationId, 'Pendiente']);
+
+            const superiorIdResult = await pool.query('SELECT boss_id FROM Users WHERE user_id = $1', [user_id]);
+            const superiorId = superiorIdResult.rows[0].boss_id;
+
+            if (financieroId.rows[0].user_id !== superiorId) {
+                const resultSuperiorApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                    [parseInt(newApprovalId, 10) + 2, superiorId, newQuotationId, 'Pendiente']);
+
+                if (resultSuperiorApproval.rowCount === 0) {
+                    return res.status(400).json('No se pudo crear el registro de aprobación pendiente de jefe en COME.');
+                };
+            };
+
+            if (resultGerenteApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación de financiero.');
+            };
+
+            if (resultFinancieroApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación pendiente de financiero.');
+            };
+
+        } else if (userRole === 'USER') {
+            const newApprovalId = await getNextApprovalId();
+            const bossResult = await pool.query('SELECT boss_id FROM Users WHERE user_id = $1', [user_id]);
+            const boss_id = bossResult.rows.length > 0 ? bossResult.rows[0].boss_id : null;
+            const resultUserApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [newApprovalId, boss_id, newQuotationId, 'Pendiente']);
+            if (resultUserApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación de jefe.');
+            };
+
+            const comeBossIdResult = await pool.query('SELECT boss_id FROM Users WHERE user_id = $1', [boss_id]);
+            const comeBossId = comeBossIdResult.rows[0].boss_id;
+            const resultBossApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [parseInt(newApprovalId, 10) + 1, comeBossId, newQuotationId, 'Pendiente']);
+
+            if (resultBossApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación de jefe en COME.');
+            };
+
+            const resultFinancieroApproval = await pool.query('INSERT INTO approval VALUES ($1, $2, $3, $4) RETURNING *',
+                [parseInt(newApprovalId, 10) + 2, financieroId.rows[0].user_id, newQuotationId, 'Pendiente']);
+
+            if (resultFinancieroApproval.rowCount === 0) {
+                return res.status(400).json('No se pudo crear el registro de aprobación pendiente de financiero.');
+            };
+        };

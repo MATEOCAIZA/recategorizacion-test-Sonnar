@@ -35,7 +35,6 @@ jobs:
           $response = curl.exe -s -u "$($env:SONAR_TOKEN):" http://localhost:9000/api/authentication/validate
           Write-Host $response
 
-      # ── Ejecutar SonarQube Scanner en Windows ────────────────
       - name: SonarQube Scan
         env:
           SONAR_HOST_URL: "http://localhost:9000"

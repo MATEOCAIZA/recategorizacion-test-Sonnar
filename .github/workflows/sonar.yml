@@ -12,26 +12,23 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # ── 1. Checkout del código ──────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 
 
-      # ── 2. Configurar Node.js ───────────────────────────────────
+      # ── Actualizado a Node 20 para evitar el warning EBADENGINE ──
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
-      # ── 3. Instalar dependencias del Backend ────────────────────
       - name: Install Backend dependencies
         working-directory: ./Back
         run: npm ci
 
-      # ── 4. Ejecutar SonarQube Scanner en Windows ────────────────
+      # ── Pasamos el token explícitamente con -Dsonar.login ────────
       - name: SonarQube Scan
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: "http://localhost:9000"
-        run: npx sonarqube-scanner
+        run: npx sonarqube-scanner -Dsonar.login="${{ secrets.SONAR_TOKEN }}"

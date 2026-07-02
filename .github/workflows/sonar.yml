@@ -27,6 +27,13 @@ jobs:
         working-directory: ./Back
         run: npm ci
 
+      - name: Debug token
+        shell: pwsh
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          Write-Host "Longitud del token: $($env:SONAR_TOKEN.Length)"
+
       # ── Ejecutar SonarQube Scanner en Windows ────────────────
       - name: SonarQube Scan
         env:

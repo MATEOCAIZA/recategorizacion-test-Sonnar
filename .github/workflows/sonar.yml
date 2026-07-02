@@ -1,0 +1,52 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  sonarqube-analysis:
+    name: SonarQube Scan
+    runs-on: self-hosted
+
+    env:
+      SONAR_HOST_URL: "http://localhost:9000"
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    steps:
+      # ── 1. Checkout del código ──────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # historial completo para un análisis preciso
+
+      # ── 2. Configurar Node.js ───────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      # ── 3. Instalar dependencias del Backend ────────────────────
+      - name: Install Backend dependencies
+        working-directory: ./Back
+        run: npm ci
+
+      # ── 4. Instalar dependencias del Frontend ──────────────────
+      - name: Install Frontend dependencies
+        working-directory: ./Front
+        run: npm ci
+
+      # ── 5. Build del Frontend (React / CRA) ────────────────────
+      - name: Build Frontend
+        working-directory: ./Front
+        run: npm run build
+
+      # ── 6. Ejecutar SonarQube Scanner ───────────────────────────
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: "http://localhost:9000"
+        # Usamos npx para descargar y ejecutar el escáner nativo de Node
+        run: npx sonarqube-scanner

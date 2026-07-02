@@ -27,8 +27,11 @@ jobs:
         working-directory: ./Back
         run: npm ci
 
-      # ── Pasamos el token explícitamente con -Dsonar.login ────────
+# ── 4. Ejecutar SonarQube Scanner en Windows ────────────────
       - name: SonarQube Scan
         env:
           SONAR_HOST_URL: "http://localhost:9000"
-        run: npx sonarqube-scanner -Dsonar.login="${{ secrets.SONAR_TOKEN }}"
+          # Pasamos el token de forma nativa para evadir el bug de npm
+          SONAR_SCANNER_OPTS: "-Dsonar.login=${{ secrets.SONAR_TOKEN }}"
+        # Ejecutamos el comando limpio sin argumentos extras
+        run: npx sonarqube-scanner
